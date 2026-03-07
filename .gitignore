@@ -35,3 +35,8 @@ client_secret*.json
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Unused / project-specific
+nginx/
+sslinfo/
+CLAUDE.md
