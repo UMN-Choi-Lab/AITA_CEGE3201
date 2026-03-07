@@ -7,7 +7,7 @@ import os
 
 from aita_core.ingest import (
     get_week_for_filename, load_pdf, load_tex,
-    collect_syllabus, run_ingestion,
+    collect_syllabus, collect_wikibook, run_ingestion,
 )
 from config import CONFIG
 
@@ -98,4 +98,5 @@ if __name__ == "__main__":
         ("homework questions", collect_homework),
         ("slide content", collect_slides),
         ("syllabus", collect_syllabus),
+        ("textbook (wikibook)", collect_wikibook),
     ])
