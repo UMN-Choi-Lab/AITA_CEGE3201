@@ -4,7 +4,10 @@ WORKDIR /app
 
 # Install dependencies
 COPY requirements.txt .
+COPY aita_core-*.whl ./
+RUN pip install --no-cache-dir aita_core-*.whl && rm -f aita_core-*.whl
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir pymupdf
 
 # Copy application code
 COPY config.py main.py ./

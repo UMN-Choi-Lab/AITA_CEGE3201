@@ -7,11 +7,15 @@ from aita_core import CourseConfig
 load_dotenv()
 
 BASE_DIR = os.path.dirname(__file__)
-_client_secret_matches = glob.glob(os.path.join(BASE_DIR, "client_secret*.json"))
 
 # Google Auth requires: client_secret file + GOOGLE_COOKIE_KEY + GOOGLE_REDIRECT_URI
 _google_cookie_key = os.getenv("GOOGLE_COOKIE_KEY")
 _google_redirect_uri = os.getenv("GOOGLE_REDIRECT_URI")
+_explicit_secret = os.getenv("GOOGLE_CLIENT_SECRET_FILE", "")
+if _explicit_secret:
+    _client_secret_matches = [os.path.join(BASE_DIR, _explicit_secret)] if os.path.exists(os.path.join(BASE_DIR, _explicit_secret)) else []
+else:
+    _client_secret_matches = glob.glob(os.path.join(BASE_DIR, "client_secret*.json"))
 if _client_secret_matches and _google_cookie_key and _google_redirect_uri:
     _google_client_secret = _client_secret_matches[0]
 else:
@@ -74,6 +78,7 @@ CONFIG = CourseConfig(
         "concepts for **CEGE 3201: Transportation Engineering**."
     ),
     system_prompt=SYSTEM_PROMPT,
+    semester_start="2026-01-20",
     week_topics={
         1:  ["Orientation", "Four-step model overview"],
         2:  ["Land use", "Trip generation"],
@@ -102,7 +107,17 @@ CONFIG = CourseConfig(
     lab_num_to_week={
         1: 2, 2: 5, 3: 9, 4: 12,
     },
-    study_guide_to_week={},
+    study_guide_to_week={
+        "Midterm 1 study guide": 1,
+        "Midterm 2 study guide": 9,
+        "Final exam study guide": 1,
+        "Final exam formula sheet": 1,
+    },
+    exam_scope={
+        "Midterm 1": {"week_start": 1, "week_end": 7},
+        "Midterm 2": {"week_start": 9, "week_end": 11},
+        "Final": {"week_start": 2, "week_end": 14},
+    },
     textbook_url="https://en.wikibooks.org/wiki/Fundamentals_of_Transportation",
     textbook_chapter_to_week={
         "Introduction": 1,
@@ -228,6 +243,7 @@ CONFIG = CourseConfig(
     backup_dir=os.path.join(BASE_DIR, "backup"),
     data_dir=os.getenv("AITA_DATA_DIR", os.path.join(BASE_DIR, "data")),
     admin_password=os.getenv("ADMIN_PASSWORD", ""),
+    admin_emails=["chois@umn.edu", "mlevin@umn.edu"],
     cookie_name="aita_3201_auth",
     cookie_key=_google_cookie_key or "",
     redirect_uri=_google_redirect_uri or "http://localhost:30002",

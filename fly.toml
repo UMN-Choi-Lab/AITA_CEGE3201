@@ -1,0 +1,33 @@
+# Fly.io configuration for AITA 3201
+# Deploy: fly deploy
+# First-time setup: see DEPLOY.md
+
+app = "aita-3201"
+primary_region = "iad"  # Ashburn, VA — reliable capacity, ~30ms from UMN
+
+[build]
+
+[env]
+  AITA_DATA_DIR = "/app/data"
+  # GOOGLE_REDIRECT_URI must be set as a secret (fly secrets set ...)
+  # to match the Fly.io URL, e.g. https://aita-3201.fly.dev
+
+[http_service]
+  internal_port = 8501
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 100
+    soft_limit = 80
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "1gb"
+
+[mounts]
+  source = "aita_data"
+  destination = "/app/data"
